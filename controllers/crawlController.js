@@ -1,10 +1,7 @@
 const puppeteer = require("puppeteer");
-const { sanitizeHtmlEntity } = require("../utils/sanitizeHtmlEntity");
 
 const crawlPostData = async (req, res) => {
   const link = req.params.postLink;
-  const title = req.query.title;
-  const description = req.query.description;
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -47,9 +44,6 @@ const crawlPostData = async (req, res) => {
     );
 
     return res.status(200).json({
-      title: sanitizeHtmlEntity(title),
-      link,
-      description: sanitizeHtmlEntity(description),
       content,
       likeCount,
       commentCount,
