@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 const crawlPostData = async (req, res) => {
-  const link = req.params.postLink;
+  const link = req.query.postLink;
 
   const browser = await puppeteer.launch({
     headless: true,
