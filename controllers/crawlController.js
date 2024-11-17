@@ -51,9 +51,9 @@ const crawlPostData = async (req, res) => {
 
     console.log(`Navigating to iframe URL: ${iframeURL}`);
     await page.goto(iframeURL, { waitUntil: "networkidle2", timeout: TIMEOUT });
-    await page.waitForNetworkIdle({ timeout: TIMEOUT });
+    // await page.waitForNetworkIdle({ timeout: TIMEOUT });
 
-    console.log('network status: idle');
+    // console.log('network status: idle');
 
     await page.waitForSelector(".se-main-container", { timeout: TIMEOUT });
 
