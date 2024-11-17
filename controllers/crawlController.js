@@ -12,11 +12,13 @@ const crawlPostData = async (req, res) => {
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
+      "--disable-gpu",
     ],
     ignoreHTTPSErrors: true,
     defaultViewport: {
       width: 1080, height: 1024,
-    }
+    },
+    protocolTimeout: 120000,
   });
 
   const TIMEOUT = 100000;
@@ -29,7 +31,7 @@ const crawlPostData = async (req, res) => {
 
     await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
     await page.setRequestInterception(true);
-    
+
     page.on("request", (req) => {
       const blockResources = ["image", "stylesheet", "font", "media", "other"];
       if (blockResources.includes(req.resourceType())) req.abort();
@@ -52,6 +54,10 @@ const crawlPostData = async (req, res) => {
     await page.waitForNetworkIdle({ timeout: TIMEOUT });
 
     console.log('network status: idle');
+
+    await page.waitForSelector(".se-main-container", { timeout: TIMEOUT });
+
+    console.log('content loaded');
 
     const content = await page.evaluate(() => {
       const element = document.querySelector(".se-main-container");
