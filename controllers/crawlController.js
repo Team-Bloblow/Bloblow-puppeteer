@@ -42,8 +42,8 @@ const crawlPostData = async (req, res) => {
     const iframeURL = await page.evaluate(() => document.querySelector("iframe").src);
 
     console.log(`Navigating to iframe URL: ${iframeURL}`);
-    await page.goto(iframeURL);
-    await page.waitForNetworkIdle();
+    await page.goto(iframeURL, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.waitForNetworkIdle({ timeout: 100000 });
 
     const content = await page.evaluate(() =>
       JSON.stringify(document.querySelector(".se-main-container").textContent)
