@@ -1,12 +1,13 @@
 const puppeteer = require("puppeteer");
+const { validateAdKeyword } = require("../utils/validateAdKeyword");
 
 const crawlPostData = async (req, res) => {
   const link = req.query.postLink;
+  console.log(req.query);
   const decodedLink = decodeURIComponent(link);
 
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: "/usr/bin/google-chrome-stable",
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -20,10 +21,15 @@ const crawlPostData = async (req, res) => {
   });
   try {
     const page = await browser.newPage();
+    console.log("Page created");
 
     await page.setViewport({ width: 1080, height: 1024 });
+    await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
     await page.goto(decodedLink);
+
+    console.log(`Navigated to ${decodedLink}`);
+
     await page.waitForSelector("iframe");
 
     const iframeURL = await page.evaluate(() => document.querySelector("iframe").src);
