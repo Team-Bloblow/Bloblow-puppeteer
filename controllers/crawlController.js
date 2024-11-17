@@ -23,17 +23,25 @@ const crawlPostData = async (req, res) => {
     const page = await browser.newPage();
     console.log("Page created");
 
-    await page.setViewport({ width: 1080, height: 1024 });
+    await page.setDefaultNavigationTimeout(100000);
+
     await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-    await page.goto(decodedLink);
+    await page.setRequestInterception(true);
+    page.on("request", (req) => {
+      const blockResources = ["image", "stylesheet", "font"];
+      if (blockResources.includes(req.resourceType())) req.abort();
+      else req.continue();
+    });
 
     console.log(`Navigated to ${decodedLink}`);
+    await page.goto(decodedLink, { waitUntil: "networkidle2", timeout: 60000 });
 
-    await page.waitForSelector("iframe");
+    await page.waitForSelector("iframe", { timeout: 100000 });
 
     const iframeURL = await page.evaluate(() => document.querySelector("iframe").src);
 
+    console.log(`Navigating to iframe URL: ${iframeURL}`);
     await page.goto(iframeURL);
     await page.waitForNetworkIdle();
 
