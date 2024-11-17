@@ -12,7 +12,7 @@ const crawlPostData = async (req, res) => {
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
-      "--disable-gpu",
+      "-single-process",
     ],
     ignoreHTTPSErrors: true,
     defaultViewport: {
