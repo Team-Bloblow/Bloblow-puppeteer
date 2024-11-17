@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 
 const crawlPostData = async (req, res) => {
   const link = req.query.postLink;
+  const decodedLink = decodeURIComponent(link);
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -22,7 +23,7 @@ const crawlPostData = async (req, res) => {
 
     await page.setViewport({ width: 1080, height: 1024 });
 
-    await page.goto(link);
+    await page.goto(decodedLink);
     await page.waitForSelector("iframe");
 
     const iframeURL = await page.evaluate(() => document.querySelector("iframe").src);
