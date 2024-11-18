@@ -3,7 +3,6 @@ const { validateAdKeyword } = require("../utils/validateAdKeyword");
 
 const crawlPostData = async (req, res) => {
   const link = req.query.postLink;
-  console.log(req.query);
   const decodedLink = decodeURIComponent(link);
 
   const browser = await puppeteer.launch({
@@ -25,7 +24,6 @@ const crawlPostData = async (req, res) => {
 
   try {
     const page = await browser.newPage();
-    console.log("Page created");
 
     await page.setDefaultNavigationTimeout(TIMEOUT);
 
@@ -38,7 +36,6 @@ const crawlPostData = async (req, res) => {
       else req.continue();
     });
 
-    console.log(`Navigated to ${decodedLink}`);
     await page.goto(decodedLink, { waitUntil: "networkidle2", timeout: TIMEOUT });
 
     await page.waitForSelector("iframe", { timeout: TIMEOUT });
@@ -49,15 +46,9 @@ const crawlPostData = async (req, res) => {
       throw new Error("Invalid iframe URL");
     }
 
-    console.log(`Navigating to iframe URL: ${iframeURL}`);
     await page.goto(iframeURL, { waitUntil: "networkidle2", timeout: TIMEOUT });
-    // await page.waitForNetworkIdle({ timeout: TIMEOUT });
-
-    // console.log('network status: idle');
 
     await page.waitForSelector(".se-main-container", { timeout: TIMEOUT });
-
-    console.log('content loaded');
 
     const content = await page.evaluate(() => {
       const element = document.querySelector(".se-main-container");
@@ -82,15 +73,9 @@ const crawlPostData = async (req, res) => {
       isAd,
     }) ;
   } catch (e) {
-    console.error(e);
     return res.status(500).send({ message: `[ServerError] Error occured crawling ${e}` });
   } finally {
-    try {
-      await browser.close();
-      console.log("Browser closed successfully.");
-    } catch (closeError) {
-      console.error("Error closing the browser:", closeError.message);
-    }
+    await browser.close();
   }
 }
 
