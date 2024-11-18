@@ -22,7 +22,7 @@ RUN npm install
 COPY . .
 
 # 포트 설정
-EXPOSE 4000
+EXPOSE 5000
 
 # 실행 명령
 CMD ["npm", "start"]
