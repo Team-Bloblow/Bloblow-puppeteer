@@ -11,12 +11,10 @@ const crawlPostData = async (req, res) => {
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
-      "-single-process",
+      "--single-process",
     ],
     ignoreHTTPSErrors: true,
-    defaultViewport: {
-      width: 1080, height: 1024,
-    },
+    defaultViewport: null,
     protocolTimeout: 120000,
   });
 
